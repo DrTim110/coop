@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function Loading(props){
+export default function Loading(props){
     return (
         <div className="progress">
             <div className="progress-bar progress-bar-striped active" style={{width:props.width}}>

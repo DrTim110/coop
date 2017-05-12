@@ -1,5 +1,8 @@
 import React from 'react';
-import {Login,Loading,Error,Main} from './components/base/index.js';
+import Login from './components/page/Login';
+import Loading from './components/atom/Loading';
+import Error from './components/page/Error';
+import Main from './components/page/Main';
 import API from './Utilities/API.js';
 
 const AUTH_WAITING = 'chill bruh!';

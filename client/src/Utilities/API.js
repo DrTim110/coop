@@ -30,6 +30,16 @@ class API {
         var promise = fetch('/api/query', this.mergeOptions(opts));
         return promise;
     }
+
+    static object(type, id, opts){
+        var promise = fetch('/api/object/' + encodeURIComponent(type) + '/' + id, this.mergeOptions(opts));
+        return promise;
+    }
+
+    static objectChildren(childType, parentId, opts){
+        var promise = fetch('/api/object/' + encodeURIComponent(childType) + '/' + parentId + '/children', this.mergeOptions(opts));
+        return promise;
+    }
 }
 
 export default API;

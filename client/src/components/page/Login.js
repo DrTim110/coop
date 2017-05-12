@@ -1,6 +1,6 @@
 import React from 'react';
 
-export class Login extends React.Component {
+export default class Login extends React.Component {
 
     login(){
         window.location.href = '/api/login';
