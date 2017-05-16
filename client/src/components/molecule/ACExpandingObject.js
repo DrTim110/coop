@@ -29,10 +29,6 @@ export default class ACExpandingObject extends React.Component {
      * Load from a reference
      */
     loadFromRef(ref, stateProperty) {
-        this.modifyState({
-            loading: true
-        });
-
         API.objectFromRef(ref).then((res) => {
             this.apiResponded(res, stateProperty);
         });
@@ -75,6 +71,9 @@ export default class ACExpandingObject extends React.Component {
             // if using ref, then use ref
             if(props['objectRef'])
             {
+                this.modifyState({
+                    loading: true
+                });
                 this.loadFromRef(props['objectRef'], 'queryResult');
             }
             else if(props['formattedId'] && props['type'])
@@ -125,7 +124,7 @@ export default class ACExpandingObject extends React.Component {
                 }
                 return (
                     <div key={ref}>
-                        {formattedId}: {name}} ({type})
+                        {formattedId}: {name} ({type})
                         {childrenSearch}
                     </div>
                 )
@@ -145,11 +144,17 @@ export default class ACExpandingObject extends React.Component {
             });
         }
 
+        let divStyle = {
+            marginLeft:'10px'
+        }
+
         return (
             <div>
                 {loadingBar}
                 {results}
-                {children}
+                <div style={divStyle}>
+                    {children}
+                </div>
             </div>  
         );
     }
