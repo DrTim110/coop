@@ -11,14 +11,14 @@ objects.get('/ref/:ref', function(req,res){
   restApi.query({
     start: 1, //the 1-based start index, defaults to 1
     limit: Infinity, //the maximum number of results to return- enables auto paging
-    fetch: ['FormattedID', 'Name', 'Children'],
+    fetch: ['FormattedID', 'Name', 'Children', 'PortfolioItemTypeName'],
     ref: req.params.ref,
   }, function(err,result){
     if(err){
       res.status(500).send(err);
     } else {
       console.log(result);
-      res.status(200).send(result.Results);
+      res.status(200).send(result);
     }
   });
 });
@@ -37,7 +37,7 @@ objects.get('/type/:type/:id', function(req,res){
     if(err){
       res.status(500).send(err);
     } else {
-      res.status(200).send(result.Results);
+      res.status(200).send(result);
     }
   });
 });

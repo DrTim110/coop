@@ -1,7 +1,9 @@
 import React from 'react';
 import Navbar from '../molecule/Navbar.js';
+import ACExpandingObject from '../molecule/ACExpandingObject.js';
 import API from '../../Utilities/API.js';
 import SearchField from '../atom/SearchField';
+
 /**
  * Type of Agile Central objects available
  */
@@ -38,10 +40,17 @@ export default class Main extends React.Component {
         this.state = {};
     }
 
+    query(obj)
+    {
+        this.setState({
+            query:obj
+        })
+    }
+
     /**
      * Query api for an object.
      */
-    query(obj){
+    _query(obj){
         this.setState({
             loading: true
         });
@@ -107,18 +116,21 @@ export default class Main extends React.Component {
         ) : undefined;
 
         var results;
-        if(this.state.queryResult && ! this.state.loading){
-            results = this.state.queryResult.map((obj, index) => {
-                return (
-                    <div key={obj._ref}>
-                        {obj.FormattedID}: {obj.Name} ({obj._type})
-                        <button onClick={()=> this.getChildren(obj)} className="btn btn-info">
-                            Find Children
-                        </button>
-                    </div>
-                )
-            });
+        if(this.state.query)
+        {
+            console.log(this.state.query);
+            results =(
+                    <ACExpandingObject type={this.state.query.type.type} formattedId={this.state.query.value} />
+                );
+        
         }
+        // if(this.state.queryResult && ! this.state.loading){
+        //     results = this.state.queryResult.map((obj, index) => {
+        //         return(
+        //             <ACExpandingObject key={obj._ref} objectRef={obj._ref} />
+        //         )
+        //     });
+        // }
         
         return (
             <div>
