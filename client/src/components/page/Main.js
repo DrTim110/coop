@@ -2,7 +2,9 @@ import React from 'react';
 import Navbar from '../molecule/Navbar.js';
 import API from '../../Utilities/API.js';
 import SearchField from '../atom/SearchField';
-
+/**
+ * Type of Agile Central objects available
+ */
 const objectTypes = [
     {
         type: 'portfolioitem/initiative',
@@ -25,7 +27,9 @@ const objectTypes = [
         label: 'Task'
     }
 ];
-
+/**
+ * `Main` is the main page after being logged in
+ */
 export default class Main extends React.Component {
 
     constructor(){
@@ -34,6 +38,9 @@ export default class Main extends React.Component {
         this.state = {};
     }
 
+    /**
+     * Query api for an object.
+     */
     query(obj){
         this.setState({
             loading: true
@@ -59,11 +66,14 @@ export default class Main extends React.Component {
         });
     }
 
+    /**
+     * Find this objects children.
+     */
     getChildren(obj){
         this.setState({
             loading: true
         });
-        API.initiativeChildren(obj.FormattedID).then((res) => {
+        API.objectFromRef(obj.Children._ref).then((res) => {
             if(res.ok){
                 res.json().then((json) => {
                     console.log(json);
@@ -84,6 +94,9 @@ export default class Main extends React.Component {
         });
     }
 
+    /**
+     * Display loading bar, or found object.
+     */
     render() {
         var loadingBar = this.state.loading ? (
             <div className="progress">

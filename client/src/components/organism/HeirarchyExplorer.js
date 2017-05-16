@@ -1,8 +1,9 @@
 import React from 'react';
 
-export default class HeiarchyExplorer extends React.Component {
-
-
+/**
+ * `HeirarchyExplorer` is meant to explore a tree Heirarchy.
+ */
+export default class HeirarchyExplorer extends React.Component {
 
 
     render() {

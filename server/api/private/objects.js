@@ -4,7 +4,26 @@ const queryUtils = rally.util.query;
 
 const objects = express.Router();
 
-objects.get('/:type/:id', function(req,res){
+objects.get('/ref/:ref', function(req,res){
+  const restApi = rally({
+    apiKey: req.user.accessToken
+  });
+  restApi.query({
+    start: 1, //the 1-based start index, defaults to 1
+    limit: Infinity, //the maximum number of results to return- enables auto paging
+    fetch: ['FormattedID', 'Name', 'Children'],
+    ref: req.params.ref,
+  }, function(err,result){
+    if(err){
+      res.status(500).send(err);
+    } else {
+      console.log(result);
+      res.status(200).send(result.Results);
+    }
+  });
+});
+
+objects.get('/type/:type/:id', function(req,res){
   const restApi = rally({
     apiKey: req.user.accessToken
   });
@@ -23,7 +42,7 @@ objects.get('/:type/:id', function(req,res){
   });
 });
 
-objects.get('/:parentId/children/:childType', function(req,res){
+objects.get('/parent/:parentId/children/:childType', function(req,res){
   const restApi = rally({
     apiKey: req.user.accessToken
   });
@@ -41,5 +60,6 @@ objects.get('/:parentId/children/:childType', function(req,res){
     }
   });
 });
+
 
 module.exports = objects;
