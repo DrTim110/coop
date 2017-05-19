@@ -106,7 +106,7 @@ export default class Main extends React.Component {
     /**
      * Display loading bar, or found object.
      */
-    render() {
+    _render() {
         var loadingBar = this.state.loading ? (
             <div className="progress">
                 <div className="progress-bar progress-bar-striped active" style={{width:'100%'}}>
@@ -124,13 +124,7 @@ export default class Main extends React.Component {
                 );
         
         }
-        // if(this.state.queryResult && ! this.state.loading){
-        //     results = this.state.queryResult.map((obj, index) => {
-        //         return(
-        //             <ACExpandingObject key={obj._ref} objectRef={obj._ref} />
-        //         )
-        //     });
-        // }
+
         
         return (
             <div>

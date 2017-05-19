@@ -4,6 +4,7 @@ import Loading from './components/atom/Loading';
 import Error from './components/page/Error';
 import Main from './components/page/Main';
 import API from './Utilities/API.js';
+import ACRearrangementView from './components/organism/ACRearrangementView';
 
 const AUTH_WAITING = 'chill bruh!';
 const AUTH_FALSE   = 'who are you?';
@@ -45,18 +46,19 @@ class App extends React.Component {
   }
 
   getRenderFromState(state){
-    if(state === AUTH_WAITING){
-      return (<Loading width="100%"/>);
-    }
-    if(state === AUTH_FALSE) {
-      return (<Login />);
-    }
-    if(state === AUTH_TRUE) {
-      return (<Main />);
-    }
-    if(state === AUTH_ERROR) {
-      return (<Error />);
-    }
+    return (<ACRearrangementView />);
+    // if(state === AUTH_WAITING){
+    //   return (<Loading width="100%"/>);
+    // }
+    // if(state === AUTH_FALSE) {
+    //   return (<Login />);
+    // }
+    // if(state === AUTH_TRUE) {
+    //   return (<Main />);
+    // }
+    // if(state === AUTH_ERROR) {
+    //   return (<Error />);
+    // }
   }
 }
 
