@@ -17,6 +17,7 @@ export default class ScheduleView extends React.Component {
                 // this.findChildren(parentId, childType);
                 initialState.parentId = parentId;
                 initialState.childType = childType;
+                initialState.childObject = ObjectMap[childType.toLowerCase()];
             }
         }
         this.state = initialState;
@@ -92,6 +93,7 @@ export default class ScheduleView extends React.Component {
         }
 
         let children;
+        
         if(this.state.loadingChildren){
             children =  <Loading width="100%"/>;
         } else {
@@ -100,8 +102,15 @@ export default class ScheduleView extends React.Component {
                     return <ScheduleView key={item._ref} item={item} width="4" index={index} moveUp={this.moveChildUp} moveDown={this.moveChildDown}/>
                 });
             } else if(this.state.parentId && this.state.childType){
-                children = <button className="btn btn-info" type="button" onClick={() => this.findChildren(this.state.parentId,this.state.childType)}>Expand</button>
+                children = <button className="btn btn-info" type="button" onClick={() => this.findChildren(this.state.parentId,this.state.childType)}>Find {this.state.childObject.label + 's'}</button>
             }
+        }
+
+        let childrenHolder;
+        if(children){
+            childrenHolder = <div className="well col-xs-12">
+                                {children}
+                            </div>
         }
 
         return (
@@ -110,7 +119,7 @@ export default class ScheduleView extends React.Component {
                     <div className="panel-body">
                         {order}
                         <RallyObject item={this.props.item} />
-                        {children}
+                        {childrenHolder}
                     </div>
                 </div>
             </div>
