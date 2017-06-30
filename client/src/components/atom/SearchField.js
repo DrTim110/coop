@@ -43,7 +43,7 @@ export default class SearchField extends React.Component {
         })
 
         return (
-            <div className="input-group">
+            <form action="" className="input-group" onSubmit={() => this.props.onSearch(this.state)}>
                 <div className={'input-group-btn' + (this.state.optionsOpen ? ' open' : '')}>
                     <button type="button" className="btn btn-default dropdown-toggle" onClick={this.toggleOptionsOpen.bind(this)}>{this.state.type.label} <span className="caret"></span></button>
                     <ul className="dropdown-menu">
@@ -52,9 +52,9 @@ export default class SearchField extends React.Component {
                 </div>
                 <input type="text" className="form-control" value={this.state.value} onChange={this.setValue.bind(this)} placeholder="Search for..." />
                 <span className="input-group-btn">
-                    <button className="btn btn-default" type="button" onClick={() => this.props.onSearch(this.state)}>Search</button>
+                    <button className="btn btn-default" type="submit">Search</button>
                 </span>
-            </div>
+            </form>
         )
     }
 }

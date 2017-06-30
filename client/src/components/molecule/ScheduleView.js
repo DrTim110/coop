@@ -27,11 +27,7 @@ export default class ScheduleView extends React.Component {
 
         this.setNewGroupName = this.setNewGroupName.bind(this);
         this.createGroup = this.createGroup.bind(this);
-
-        // this.moveUp = this.moveUp.bind(this);
-        // this.moveDown = this.moveDown.bind(this);
-        // this.moveChildUp = this.moveChildUp.bind(this);
-        // this.moveChildDown = this.moveChildDown.bind(this);
+        // this.moveChild = this.moveChild.bind(this);
     }
 
     findChildren(parentId, childType){
@@ -60,36 +56,6 @@ export default class ScheduleView extends React.Component {
             groups: groups,
             loadingChildren: false
         });
-    }
-
-    moveUp(){
-        if(this.props.moveUp){
-            this.props.moveUp(this.props.index);
-        }
-    }
-
-    moveDown(){
-        if(this.props.moveDown){
-            this.props.moveDown(this.props.index);
-        }
-    }
-
-    moveChildUp(index){
-        if(index > 0){
-            let children = this.state.children.slice();
-            let removed = children.splice(index - 1, 1)[0];
-            children.splice(index, 0, removed);
-            this.setState({children: children});
-        }
-    }
-
-    moveChildDown(index){
-        if(index < this.state.children.length - 1){
-            let children = this.state.children.slice();
-            let removed = children.splice(index, 1)[0];
-            children.splice(index + 1, 0, removed);
-            this.setState({children: children});
-        }
     }
 
     setNewGroupName(event){
@@ -122,7 +88,7 @@ export default class ScheduleView extends React.Component {
                     if(this.state.groups.length > 1){
                         return <div className="well col-xs-12" key={group.label}>
                             <h4 className="text-center">{group.label}</h4>
-                            {children ? children : 'Nothing to see here'}
+                            {children.length > 0 ? children : <h6 className="text-center">Nothing to see here</h6>}
                         </div>;
                     }
                     return children;
@@ -148,12 +114,12 @@ export default class ScheduleView extends React.Component {
         let controls;
         if(this.state.groups && this.state.groups.length > 0){
             controls =  <div className="">
-                            <div className="input-group">
+                            <form action="" className="input-group" onSubmit={this.createGroup}>
                                 <span className="input-group-btn">
-                                    <button type="button" className="btn btn-default" onClick={this.createGroup}>Create Group</button>
+                                    <button type="submit" className="btn btn-default">Create Group</button>
                                 </span>
                                 <input type="text" className="form-control" value={this.state.newGroupName} onChange={this.setNewGroupName} placeholder="Group Name..." />
-                            </div>
+                            </form>
                             {order}
                         </div>
         }
