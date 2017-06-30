@@ -50,7 +50,7 @@ export default class SearchField extends React.Component {
                         {options}
                     </ul>
                 </div>
-                <input type="text" className="form-control" value={this.state.value} onChange={this.setValue.bind(this)}placeholder="Search for..." />
+                <input type="text" className="form-control" value={this.state.value} onChange={this.setValue.bind(this)} placeholder="Search for..." />
                 <span className="input-group-btn">
                     <button className="btn btn-default" type="button" onClick={() => this.props.onSearch(this.state)}>Search</button>
                 </span>

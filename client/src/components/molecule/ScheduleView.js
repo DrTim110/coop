@@ -8,7 +8,9 @@ export default class ScheduleView extends React.Component {
 
     constructor(props){
         super(props);
-        const initialState = {};
+        const initialState = {
+            newGroupName: ''
+        };
         if(props.item){
             const parentId = props.item.FormattedID;
             const childType = ObjectMap[props.item._type.toLowerCase()].childType;
@@ -18,26 +20,26 @@ export default class ScheduleView extends React.Component {
                 initialState.parentId = parentId;
                 initialState.childType = childType;
                 initialState.childObject = ObjectMap[childType.toLowerCase()];
+                initialState.groups = [];
             }
         }
         this.state = initialState;
 
-        this.moveUp = this.moveUp.bind(this);
-        this.moveDown = this.moveDown.bind(this);
-        this.moveChildUp = this.moveChildUp.bind(this);
-        this.moveChildDown = this.moveChildDown.bind(this);
+        this.setNewGroupName = this.setNewGroupName.bind(this);
+        this.createGroup = this.createGroup.bind(this);
+
+        // this.moveUp = this.moveUp.bind(this);
+        // this.moveDown = this.moveDown.bind(this);
+        // this.moveChildUp = this.moveChildUp.bind(this);
+        // this.moveChildDown = this.moveChildDown.bind(this);
     }
 
     findChildren(parentId, childType){
-        const state = Object.assign(this.state, {loadingChildren: true});
-        this.setState(state);
+        this.setState({loadingChildren: true});
         API.objectChildren(parentId, childType).then((res) => {
             if(res.ok){
                 res.json().then((json) => {
-                    this.setState({
-                        children: json,
-                        loadingChildren:false
-                    });
+                    this.groupChildren(json);
                 });
             } else {
                 this.setState({
@@ -45,6 +47,18 @@ export default class ScheduleView extends React.Component {
                     children: undefined
                 });
             }
+        });
+    }
+
+    groupChildren(children){
+        let groups = this.state.groups.splice();
+        groups.push({
+            label: 'Unassigned',
+            children: children
+        });
+        this.setState({
+            groups: groups,
+            loadingChildren: false
         });
     }
 
@@ -65,8 +79,7 @@ export default class ScheduleView extends React.Component {
             let children = this.state.children.slice();
             let removed = children.splice(index - 1, 1)[0];
             children.splice(index, 0, removed);
-            let state = Object.assign(this.state, {children: children});
-            this.setState(state);
+            this.setState({children: children});
         }
     }
 
@@ -75,9 +88,49 @@ export default class ScheduleView extends React.Component {
             let children = this.state.children.slice();
             let removed = children.splice(index, 1)[0];
             children.splice(index + 1, 0, removed);
-            let state = Object.assign(this.state, {children: children});
-            this.setState(state);
+            this.setState({children: children});
         }
+    }
+
+    setNewGroupName(event){
+        this.setState({
+            newGroupName: event.target.value
+        });
+    }
+
+    createGroup(){
+        if(this.state.newGroupName.length > 0){
+            let groups = this.state.groups.slice();
+            groups.unshift({
+                label: this.state.newGroupName,
+                children: []
+            });
+            this.setState({
+                newGroupName: '',
+                groups: groups
+            });
+        }
+    }
+
+    renderChildren(){
+        if(this.state.groups){
+            if(this.state.groups.length > 0){
+                return this.state.groups.map((group, groupIndex) => {
+                    let children = group.children.map((child, childIndex) => {
+                        return <ScheduleView key={child._ref} item={child} width="4"/>
+                    });
+                    if(this.state.groups.length > 1){
+                        return <div className="well col-xs-12" key={group.label}>
+                            <h4 className="text-center">{group.label}</h4>
+                            {children ? children : 'Nothing to see here'}
+                        </div>;
+                    }
+                    return children;
+                });
+            }
+        }
+
+        return <button className="btn btn-info" type="button" onClick={() => this.findChildren(this.state.parentId,this.state.childType)}>Find {this.state.childObject.labelPlural}</button>
     }
 
     render() {
@@ -85,41 +138,39 @@ export default class ScheduleView extends React.Component {
         let order;
 
         if(!isNaN(this.props.index)){
-            order = <p>
-                <button className="btn btn-default btn-sm" type="button" onClick={this.moveUp}>/\</button>
-                {' ' + (this.props.index + 1) + ' '}
-                <button className="btn btn-default btn-sm" type="button" onClick={this.moveDown}>\/</button>
-            </p>
+            order = <p className="pull-right">
+                        <button className="btn btn-default btn-sm" type="button" onClick={this.moveUp}>/\</button>
+                        {' ' + (this.props.index + 1) + ' '}
+                        <button className="btn btn-default btn-sm" type="button" onClick={this.moveDown}>\/</button>
+                    </p>
         }
 
-        let children;
-        
-        if(this.state.loadingChildren){
-            children =  <Loading width="100%"/>;
-        } else {
-            if(this.state.children && this.state.children.length > 0){
-                children = this.state.children.map((item, index) => {
-                    return <ScheduleView key={item._ref} item={item} width="4" index={index} moveUp={this.moveChildUp} moveDown={this.moveChildDown}/>
-                });
-            } else if(this.state.parentId && this.state.childType){
-                children = <button className="btn btn-info" type="button" onClick={() => this.findChildren(this.state.parentId,this.state.childType)}>Find {this.state.childObject.label + 's'}</button>
-            }
-        }
-
-        let childrenHolder;
-        if(children){
-            childrenHolder = <div className="well col-xs-12">
-                                {children}
+        let controls;
+        if(this.state.groups && this.state.groups.length > 0){
+            controls =  <div className="">
+                            <div className="input-group">
+                                <span className="input-group-btn">
+                                    <button type="button" className="btn btn-default" onClick={this.createGroup}>Create Group</button>
+                                </span>
+                                <input type="text" className="form-control" value={this.state.newGroupName} onChange={this.setNewGroupName} placeholder="Group Name..." />
                             </div>
+                            {order}
+                        </div>
+        }
+
+        let loading;
+        if(this.state.loadingChildren){
+            loading =  <Loading width="100%"/>;
         }
 
         return (
-            <div className={'col-xs-' + (this.props.width && !(this.state.children && this.state.children.length > 0) ? this.props.width : '12')}>
+            <div className={'col-xs-' + (this.props.width && !(this.state.groups && this.state.groups.length > 0) ? this.props.width : '12')}>
                 <div className="panel panel-default">
                     <div className="panel-body">
-                        {order}
                         <RallyObject item={this.props.item} />
-                        {childrenHolder}
+                        {loading}
+                        {controls}
+                        {this.renderChildren()}
                     </div>
                 </div>
             </div>
