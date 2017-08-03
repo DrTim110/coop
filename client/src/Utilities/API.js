@@ -40,6 +40,10 @@ class API {
         var promise = fetch('/api/object/' +  parentId + '/children/' + encodeURIComponent(childType), this.mergeOptions(opts));
         return promise;
     }
+    static getEpicUserStories(epicID, opts){
+        let promise = fetch('/api/object/' + epicID + '/UserStories', this.mergeOptions(opts));
+        return promise;
+    }
 }
 
 export default API;

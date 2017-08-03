@@ -2,7 +2,8 @@ import React from 'react';
 import Login from './components/page/Login';
 import Loading from './components/atom/Loading';
 import Error from './components/page/Error';
-import Main from './components/page/Main';
+// import Main from './components/page/Main';
+import CheckEpic from './components/page/CheckEpic';
 import API from './Utilities/API.js';
 
 const AUTH_WAITING = 'chill bruh!';
@@ -52,7 +53,7 @@ class App extends React.Component {
       return (<Login />);
     }
     if(state === AUTH_TRUE) {
-      return (<Main />);
+      return (<CheckEpic />);
     }
     if(state === AUTH_ERROR) {
       return (<Error />);
