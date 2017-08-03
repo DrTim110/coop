@@ -9,7 +9,7 @@ class CheckEpic extends Component {
         super();
 
         this.state = {
-            epicSearchValue: 'E1023',
+            epicSearchValue: '',
             epicResults: []
         }
     }
