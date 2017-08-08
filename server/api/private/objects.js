@@ -17,7 +17,7 @@ objects.get('/:epicID/UserStories', function(req,res){
     type: 'hierarchicalrequirement',
     start: 1,
     limit: Infinity,
-    fetch: ['FormattedID','Name','Owner'],
+    fetch: ['FormattedID','Name','Owner', 'ScheduleState', 'Iteration', 'Project', 'Feature', 'Predecessors', 'Successors'],
     query: query
   }, function(err, result){
     if(err){
@@ -25,6 +25,59 @@ objects.get('/:epicID/UserStories', function(req,res){
     } else {
       res.status(200).send(result.Results);
     }
+  });
+});
+
+objects.get('/:epicID-not_accepted.csv', function(req,res){
+  const restApi = rally({
+    apiKey: req.user.accessToken
+  });
+
+  let query = queryUtils.where('PortfolioItem.Parent.FormattedID', '=', req.params.epicID);
+
+  query = query.and('ScheduleState', '<', 'Accepted');
+
+  restApi.query({
+    type: 'hierarchicalrequirement',
+    start: 1,
+    limit: Infinity,
+    fetch: ['FormattedID','Name','Owner', 'ScheduleState', 'Iteration', 'Project', 'Feature', 'Predecessors', 'Successors'],
+    query: query
+  }, function(err, result){
+    if(err){
+      res.status(500).send(err);
+      return;
+    }
+
+    //generate CSV
+    let csv = [];
+
+    //csv headers
+    csv.push([
+      'FormattedID', 
+      'Name', 
+      'ScheduleState', 
+      'Owner', 
+      'Iteration', 
+      'Project', 
+      'Feature'
+    ].join(','));
+    let stories = result.Results;
+    for(let i = 0; i < stories.length; i++){
+      let story = stories[i];
+      csv.push([
+        story.FormattedID,
+        story.Name,
+        story.ScheduleState,
+        story.Owner._refObjectName,
+        (story.Iteration ? story.Iteration.Name : ''),
+        story.Project.Name,
+        story.Feature.FormattedID
+      ].join(','));
+    }
+
+    let csvStr = csv.join('\r\n');
+    res.status(200).send(new Buffer(csvStr));
   });
 });
 
