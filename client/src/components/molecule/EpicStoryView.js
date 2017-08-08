@@ -44,13 +44,20 @@ class EpicStoryView extends Component {
         }
 
         let stories = this.state.userStories.map((value, index) => {
-            return <div className="well well-sm" key={value._ref}>{value.FormattedID} : {value.Name} : {value.Owner._refObjectName}</div>
+            return <div className="well well-sm" key={value._ref}>
+                <h4> {value.FormattedID} : {value.Name} [{value.ScheduleState}]</h4>
+                <p>Owner: {value.Owner._refObjectName}</p>
+                <p>Feature: {value.Feature.FormattedID} - {value.Feature.Name}</p>
+                <p>Project: {value.Project.Name}</p>
+                <p>Iteration: {value.Iteration ? value.Iteration.Name : 'unknown'}</p>
+            </div>
         });
 
         return (
             <div className="panel panel-default">
                 <div className="panel-body">
-                    {this.props.epic.FormattedID} : {this.props.epic.Name}
+                    <h3>{this.props.epic.FormattedID} : {this.props.epic.Name}</h3>
+                    <a href={"/api/object/" + this.props.epic.FormattedID + '-not_accepted.csv'}  download>CSV</a>
                     {loading}
                     {stories}
                 </div>

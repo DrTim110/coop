@@ -10,7 +10,8 @@ class CheckEpic extends Component {
 
         this.state = {
             epicSearchValue: '',
-            epicResults: []
+            epicResults: [],
+            loading: false
         }
     }
 
@@ -24,16 +25,23 @@ class CheckEpic extends Component {
         event.preventDefault();
         let epicID = this.state.epicSearchValue.trim();
         let localThis = this;
+        localThis.setState({
+            loading: true
+        });
         if(epicID.length > 0){
             API.object('portfolioitem/epic',epicID).then(function(searchResponse){
                 return searchResponse.json();
             }).then(function(searchJson){
                 localThis.setState({
-                    epicResults: searchJson
+                    epicResults: searchJson,
+                    loading: false
                 });
             }).catch(function(err){
                 console.log('err');
                 console.log(err);
+                localThis.setState({
+                    loading: false
+                });
             });
         }
         return false;
@@ -45,7 +53,9 @@ class CheckEpic extends Component {
             return (
                 <EpicStoryView epic={value} key={value._ref} />
             );
-        })
+        });
+
+        
 
         return (
             <div>
@@ -56,7 +66,7 @@ class CheckEpic extends Component {
                         <button className="btn btn-info" type="submit">Search</button>
                     </form>
                     <div className="row">
-                        {epics}
+                        {this.state.loading ? 'Loading...' : epics}
                     </div>
                 </div>
             </div>
